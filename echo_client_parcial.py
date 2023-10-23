@@ -1,6 +1,6 @@
 import socket
 
-SOCK_BUFFER = 1024
+SOCK_BUFFER = 4
 
 
 if __name__ == '__main__':
@@ -11,10 +11,16 @@ if __name__ == '__main__':
     sock.connect(server_address)
 
     msg = "Hola mundo!"
+    amnt_expected = len(msg.encode("utf-8"))
+    amnt_received = 0
     print(f"Enviando mensaje: {msg}")
+    msg_rcvd = b""
     sock.sendall(msg.encode("utf-8"))
-    dato = sock.recv(SOCK_BUFFER)
-    print(f"Recibí: {dato}")
-
+    while amnt_received < amnt_expected:
+        dato = sock.recv(SOCK_BUFFER)
+        print(f"Recibí: {dato}")
+        amnt_received += len(dato)
+        msg_rcvd += dato
+    print(f"Total recibido: {msg_rcvd}")
     print("Cerrando conexión")
     sock.close()
